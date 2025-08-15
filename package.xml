@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package packagerversion="1.10.12" version="2.0" xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+ <name>zfs</name>
+ <channel>pecl.php.net</channel>
+ <summary>PHP extension for OpenZFS on FreeBSD</summary>
+ <description>
+  This extension provides PHP interface to OpenZFS on FreeBSD systems.
+  It allows PHP applications to interact with ZFS pools and datasets
+  through the libzfs and libzfs_core libraries.
+  
+  Currently supports:
+  - zfs_list(): List all ZFS datasets with properties
+  - zpool_list(): List all ZFS pools with status and properties
+ </description>
+ <lead>
+  <name>Developer</name>
+  <user>developer</user>
+  <email>developer@example.com</email>
+  <active>yes</active>
+ </lead>
+ <date>2025-08-14</date>
+ <time>23:12:24</time>
+ <version>
+  <release>1.0.0</release>
+  <api>1.0.0</api>
+ </version>
+ <stability>
+  <release>stable</release>
+  <api>stable</api>
+ </stability>
+ <license uri="http://www.php.net/license">PHP License</license>
+ <notes>
+  Initial release of PHP ZFS extension for FreeBSD.
+  
+  Features:
+  - zfs_list() function to list ZFS datasets
+  - zpool_list() function to list ZFS pools
+  - Based on FreeBSD ZFS CLI utilities implementation
+  - Full integration with libzfs and libzfs_core
+ </notes>
+ <contents>
+  <dir name="/">
+   <file md5sum="" name="config.m4" role="src" />
+   <file md5sum="" name="php_zfs.h" role="src" />
+   <file md5sum="" name="php_zfs.c" role="src" />
+   <file md5sum="" name="zfs_list.c" role="src" />
+   <file md5sum="" name="zpool_list.c" role="src" />
+   <file md5sum="" name="Makefile" role="src" />
+   <file md5sum="" name="test_zfs.php" role="test" />
+   <file md5sum="" name="README.md" role="doc" />
+  </dir>
+ </contents>
+ <dependencies>
+  <required>
+   <php>
+    <min>7.4.0</min>
+   </php>
+   <pearinstaller>
+    <min>1.4.0</min>
+   </pearinstaller>
+  </required>
+  <optional>
+   <os>
+    <name>freebsd</name>
+   </os>
+  </optional>
+ </dependencies>
+ <providesextension>zfs</providesextension>
+ <extsrcrelease />
+</package>
