@@ -1,6 +1,12 @@
 #ifndef PHP_ZFS_H
 #define PHP_ZFS_H
 
+#include "php.h"
+
+#ifdef ZTS
+#include "TSRM.h"
+#endif
+
 extern zend_module_entry zfs_module_entry;
 #define phpext_zfs_ptr &zfs_module_entry
 
@@ -14,12 +20,6 @@ extern zend_module_entry zfs_module_entry;
 #else
 #	define PHP_ZFS_API
 #endif
-
-#ifdef ZTS
-#include "TSRM.h"
-#endif
-
-#include "php.h"
 
 /* FreeBSD ZFS includes */
 #ifdef HAVE_ZFSLIB
