@@ -45,3 +45,6 @@ tests/*.log
 tests/*.out
 tests/*.php
 tests/*.sh
+
+# Allow contrib directory
+!contrib/

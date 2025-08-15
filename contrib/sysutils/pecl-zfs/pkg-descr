@@ -1,0 +1,10 @@
+PHP bindings to the OpenZFS library which provide access to ZFS pools and
+datasets on FreeBSD systems. This extension allows PHP applications to
+interact with ZFS through the libzfs and libzfs_core libraries.
+
+Features:
+- List ZFS pools with status and properties
+- List ZFS datasets with properties and metadata
+- Based on FreeBSD ZFS CLI utilities implementation
+
+WWW: https://pacyworld.dev/penitentuary/pecl-freebsd-zfs
