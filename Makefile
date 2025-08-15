@@ -10,7 +10,7 @@ all: build
 
 # Configure and build the extension
 build: configure
-	$(MAKE) -f Makefile.frag
+	$(MAKE)
 
 # Run phpize to generate configure script
 configure: config.m4
@@ -19,12 +19,12 @@ configure: config.m4
 
 # Clean build files
 clean:
-	if [ -f Makefile.frag ]; then $(MAKE) -f Makefile.frag clean; fi
+	if [ -f Makefile ]; then $(MAKE) clean; fi
 	$(PHPIZE) --clean
 
 # Install the extension
 install: build
-	$(MAKE) -f Makefile.frag install
+	$(MAKE) install
 
 # Test the extension
 test: install
@@ -33,9 +33,15 @@ test: install
 
 # Development helpers
 dev-clean: clean
-	rm -f configure configure.in config.h.in
+	rm -f configure configure.ac config.h.in
 	rm -rf autom4te.cache/
 	rm -f acinclude.m4 aclocal.m4 config.guess config.sub
 	rm -f install-sh ltmain.sh missing mkinstalldirs
 
-.PHONY: all build configure clean install test dev-clean
+# Manual build steps (alternative to make build)
+manual-build:
+	$(PHPIZE)
+	./configure --enable-$(EXTENSION_NAME)
+	$(MAKE)
+
+.PHONY: all build configure clean install test dev-clean manual-build

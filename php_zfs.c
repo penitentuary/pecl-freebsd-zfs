@@ -7,15 +7,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <errno.h>
+#include <stdarg.h>
 
 /* Global libzfs handle */
 static libzfs_handle_t *g_zfs = NULL;
 
 /* Function argument info */
-ZEND_BEGIN_ARG_INFO(arginfo_zfs_list, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_zfs_list, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
-ZEND_BEGIN_ARG_INFO(arginfo_zpool_list, 0)
+ZEND_BEGIN_ARG_INFO_EX(arginfo_zpool_list, 0, 0, 0)
 ZEND_END_ARG_INFO()
 
 /* Function entries */
