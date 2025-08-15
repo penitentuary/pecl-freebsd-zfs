@@ -2,7 +2,11 @@
 #include "config.h"
 #endif
 
+#include "php.h"
+#include "php_ini.h"
+#include "ext/standard/info.h"
 #include "php_zfs.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -10,7 +14,9 @@
 #include <stdarg.h>
 
 /* Global libzfs handle */
+#ifdef HAVE_ZFSLIB
 static libzfs_handle_t *g_zfs = NULL;
+#endif
 
 /* Function argument info */
 ZEND_BEGIN_ARG_INFO_EX(arginfo_zfs_list, 0, 0, 0)
@@ -47,12 +53,14 @@ ZEND_GET_MODULE(zfs)
 /* Module initialization */
 PHP_MINIT_FUNCTION(zfs)
 {
+#ifdef HAVE_ZFSLIB
     /* Initialize libzfs */
     g_zfs = libzfs_init();
     if (g_zfs == NULL) {
         php_error_docref(NULL, E_WARNING, "Failed to initialize libzfs");
         return FAILURE;
     }
+#endif
     
     return SUCCESS;
 }
@@ -60,10 +68,12 @@ PHP_MINIT_FUNCTION(zfs)
 /* Module shutdown */
 PHP_MSHUTDOWN_FUNCTION(zfs)
 {
+#ifdef HAVE_ZFSLIB
     if (g_zfs != NULL) {
         libzfs_fini(g_zfs);
         g_zfs = NULL;
     }
+#endif
     
     return SUCCESS;
 }

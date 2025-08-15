@@ -1,56 +1,61 @@
-PHP_ARG_ENABLE([zfs],
-  [whether to enable ZFS support],
-  [AS_HELP_STRING([--enable-zfs],
-    [Enable ZFS support])],
-  [no])
+dnl config.m4 for extension zfs
+
+PHP_ARG_WITH(zfs, for zfs support,
+[  --with-zfs=[DIR]       Include zfs support])
 
 if test "$PHP_ZFS" != "no"; then
-  dnl Check for libzfs headers
-  AC_MSG_CHECKING([for libzfs headers])
-  
-  dnl FreeBSD specific paths for headers
-  ZFS_SEARCH_PATHS="/usr/local/include /usr/include"
-  ZFS_LIB_PATHS="/usr/local/lib /usr/lib"
-  
-  dnl Look for libzfs.h
-  for i in $ZFS_SEARCH_PATHS; do
-    if test -f "$i/libzfs.h"; then
-      ZFS_INCDIR=$i
-      AC_MSG_RESULT([found in $ZFS_INCDIR])
-      break
-    fi
-  done
-  
-  if test -z "$ZFS_INCDIR"; then
-    AC_MSG_ERROR([libzfs.h not found. Please install OpenZFS development libraries])
+  SEARCH_PATH="/usr/local /usr"
+  SEARCH_FOR="/include/libzfs.h"
+  if test -r $PHP_ZFS/$SEARCH_FOR; then # path given as parameter
+    ZFS_DIR=$PHP_ZFS
+  else
+    AC_MSG_CHECKING([for zfs files in default path])
+    for i in $SEARCH_PATH ; do
+      if test -r $i/$SEARCH_FOR; then
+        ZFS_DIR=$i
+        AC_MSG_RESULT(found in $i)
+      fi
+    done
   fi
   
-  dnl Look for libzfs library
-  AC_MSG_CHECKING([for libzfs library])
-  for i in $ZFS_LIB_PATHS; do
-    if test -f "$i/libzfs.so" -o -f "$i/libzfs.a"; then
-      ZFS_LIBDIR=$i
-      AC_MSG_RESULT([found in $ZFS_LIBDIR])
-      break
-    fi
-  done
-  
-  if test -z "$ZFS_LIBDIR"; then
-    AC_MSG_ERROR([libzfs library not found. Please install OpenZFS development libraries])
+  if test -z "$ZFS_DIR"; then
+    AC_MSG_RESULT([not found])
+    AC_MSG_ERROR([The required libzfs library was not found. You can obtain that package from OpenZFS project])
   fi
+
+  PHP_ADD_INCLUDE($ZFS_DIR/include)
+
+  PHP_CHECK_LIBRARY(zfs,libzfs_init,
+  [
+    PHP_ADD_LIBRARY_WITH_PATH(zfs, $ZFS_DIR/lib, ZFS_SHARED_LIBADD)
+    AC_DEFINE(HAVE_ZFSLIB,1,[Have libzfs])
+  ],[
+    AC_MSG_ERROR([libzfs not found])
+  ],[
+    -L$ZFS_DIR/lib -lm 
+  ])
   
-  dnl Add include path
-  PHP_ADD_INCLUDE($ZFS_INCDIR)
-  
-  dnl Add libraries
-  PHP_ADD_LIBRARY_WITH_PATH(zfs, $ZFS_LIBDIR, ZFS_SHARED_LIBADD)
-  PHP_ADD_LIBRARY_WITH_PATH(zfs_core, $ZFS_LIBDIR, ZFS_SHARED_LIBADD)
-  PHP_ADD_LIBRARY_WITH_PATH(nvpair, $ZFS_LIBDIR, ZFS_SHARED_LIBADD)
-  PHP_ADD_LIBRARY_WITH_PATH(util, $ZFS_LIBDIR, ZFS_SHARED_LIBADD)
-  
-  dnl Define the extension
-  AC_DEFINE(HAVE_ZFS, 1, [Whether you have ZFS support])
-  
+  PHP_CHECK_LIBRARY(zfs_core,lzc_get_props,
+  [
+    PHP_ADD_LIBRARY_WITH_PATH(zfs_core, $ZFS_DIR/lib, ZFS_SHARED_LIBADD)
+    AC_DEFINE(HAVE_ZFS_CORE,1,[Have libzfs_core])
+  ],[
+    AC_MSG_WARN([libzfs_core not found, some features may not be available])
+  ],[
+    -L$ZFS_DIR/lib -lm
+  ])
+
+  PHP_CHECK_LIBRARY(nvpair,nvlist_alloc,
+  [
+    PHP_ADD_LIBRARY_WITH_PATH(nvpair, $ZFS_DIR/lib, ZFS_SHARED_LIBADD)
+    AC_DEFINE(HAVE_NVPAIR,1,[Have libnvpair])
+  ],[
+    AC_MSG_WARN([libnvpair not found, some features may not be available])
+  ],[
+    -L$ZFS_DIR/lib -lm 
+  ])
+
   PHP_SUBST(ZFS_SHARED_LIBADD)
-  PHP_NEW_EXTENSION(zfs, php_zfs.c zfs_list.c zpool_list.c, $ext_shared,, -DZEND_ENABLE_STATIC_TSRMLS_CACHE=1)
+
+  PHP_NEW_EXTENSION(zfs, zfs.c zfs_list.c zpool_list.c, $ext_shared)
 fi

@@ -1,24 +1,37 @@
 #ifndef PHP_ZFS_H
 #define PHP_ZFS_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
+extern zend_module_entry zfs_module_entry;
+#define phpext_zfs_ptr &zfs_module_entry
+
+#define PHP_ZFS_VERSION "1.0.0"
+
+#ifdef PHP_WIN32
+#	define PHP_ZFS_API __declspec(dllexport)
+#elif defined(__GNUC__) && __GNUC__ >= 4
+#	define PHP_ZFS_API __attribute__ ((visibility("default")))
+#else
+#	define PHP_ZFS_API
+#endif
+
+#ifdef ZTS
+#include "TSRM.h"
 #endif
 
 #include "php.h"
-#include "php_ini.h"
-#include "ext/standard/info.h"
 
 /* FreeBSD ZFS includes */
+#ifdef HAVE_ZFSLIB
 #include <libzfs.h>
+#endif
+
+#ifdef HAVE_ZFS_CORE
 #include <libzfs_core.h>
+#endif
+
+#ifdef HAVE_NVPAIR
 #include <sys/nvpair.h>
-
-#define PHP_ZFS_VERSION "1.0.0"
-#define PHP_ZFS_EXTNAME "zfs"
-
-extern zend_module_entry zfs_module_entry;
-#define phpext_zfs_ptr &zfs_module_entry
+#endif
 
 /* Function declarations */
 PHP_MINIT_FUNCTION(zfs);

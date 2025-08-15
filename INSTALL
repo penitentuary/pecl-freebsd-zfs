@@ -1,0 +1,86 @@
+PHP ZFS Extension Installation Guide
+=====================================
+
+Prerequisites
+-------------
+
+1. FreeBSD system with OpenZFS installed
+2. PHP development headers and tools
+3. OpenZFS development libraries
+
+Installation Steps
+------------------
+
+1. Install required packages:
+   pkg install php81-dev openzfs
+
+2. Extract or clone the extension source code
+
+3. Build the extension:
+   cd /path/to/php-zfs-ext
+   phpize
+   ./configure --with-zfs
+   make
+
+4. Test the extension (optional):
+   make test
+
+5. Install the extension:
+   make install
+
+6. Enable the extension:
+   Add "extension=zfs.so" to your php.ini file
+
+7. Restart your web server (if using PHP with a web server)
+
+8. Verify installation:
+   php -m | grep zfs
+
+Configuration Options
+--------------------
+
+--with-zfs[=DIR]
+  Include ZFS support. DIR is the ZFS installation directory.
+  If not specified, the extension will search in common locations:
+  - /usr/local
+  - /usr
+
+Troubleshooting
+--------------
+
+1. If configure fails with "libzfs not found":
+   - Ensure OpenZFS is installed: pkg install openzfs
+   - Specify the ZFS directory: ./configure --with-zfs=/usr/local
+
+2. If compilation fails:
+   - Ensure PHP development headers are installed: pkg install php81-dev
+   - Check that you have the correct PHP version
+
+3. If the extension doesn't load:
+   - Check php.ini for the correct extension path
+   - Verify file permissions on the .so file
+   - Check PHP error logs for specific error messages
+
+4. If functions return false:
+   - Ensure you have appropriate permissions (ZFS operations often require root)
+   - Check that ZFS pools/datasets exist on the system
+   - Verify ZFS services are running
+
+Testing
+-------
+
+Run the test suite:
+  make test
+
+Or run individual tests:
+  php run-tests.php tests/
+
+Manual testing:
+  php -r "var_dump(zpool_list());"
+  php -r "var_dump(zfs_list());"
+
+Support
+-------
+
+This extension is designed for FreeBSD systems with OpenZFS.
+For issues, check the README.md file for more detailed information.
