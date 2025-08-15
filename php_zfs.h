@@ -5,6 +5,7 @@ extern zend_module_entry zfs_module_entry;
 #define phpext_zfs_ptr &zfs_module_entry
 
 #define PHP_ZFS_VERSION "1.0.0"
+#define PHP_ZFS_EXTNAME "zfs"
 
 #ifdef PHP_WIN32
 #	define PHP_ZFS_API __declspec(dllexport)
