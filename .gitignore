@@ -46,5 +46,5 @@ tests/*.out
 tests/*.php
 tests/*.sh
 
-# Allow contrib directory
-!contrib/
+# Allow only Makefile in port directory
+!contrib/sysutils/pecl-zfs/Makefile
