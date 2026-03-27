@@ -10,6 +10,15 @@ jobs:
     name: FreeBSD 15 / PHP 8.3
     runs-on: FreeBSD-15.0
     steps:
+      - name: Debug execution context
+        run: |
+          id
+          whoami
+          echo "HOME=$HOME"
+          echo "PWD=$PWD"
+          echo "SHELL=$SHELL"
+          ls -la /var/db/pkg/ || true
+
       - name: Install dependencies
         run: pkg install -y git php83 autoconf automake
 
