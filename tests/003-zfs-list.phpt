@@ -46,4 +46,12 @@ if ($result === false) {
 ?>
 --EXPECTF--
 Testing zfs_list() function
-zfs_list() returned%s
+zfs_list() returned array with %d datasets
+First dataset structure test:
+  name: present
+  type: present
+  used: present
+  available: present
+  referenced: present
+  mountpoint: present
+  type value is valid: %s

@@ -36,4 +36,11 @@ if ($result === false) {
 ?>
 --EXPECTF--
 Testing zpool_list() function
-zpool_list() returned%s
+zpool_list() returned array with %d pools
+First pool structure test:
+  name: present
+  size: present
+  allocated: present
+  free: present
+  capacity: present
+  health: present
