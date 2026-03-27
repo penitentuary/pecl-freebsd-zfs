@@ -1,8 +1,8 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "php_zfs.h"
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <libzfs.h>
-#include <libzfs_core.h>
 
 /* Callback structure for pool iteration */
 typedef struct {
@@ -10,20 +10,7 @@ typedef struct {
     int error;
 } zpool_list_cb_t;
 
-/* Pool properties we want to retrieve */
-static const char *zpool_props[] = {
-    "name",
-    "size",
-    "allocated",
-    "free",
-    "capacity",
-    "health",
-    "version",
-    "bootfs",
-    NULL
-};
-
-/* Callback function for iterating pools - based on FreeBSD zpool list implementation */
+/* Callback function for iterating pools */
 static int zpool_list_callback(zpool_handle_t *zhp, void *data)
 {
     zpool_list_cb_t *cb = (zpool_list_cb_t *)data;
@@ -33,7 +20,8 @@ static int zpool_list_callback(zpool_handle_t *zhp, void *data)
     uint64_t size, allocated, free;
     int capacity;
     zpool_status_t status;
-    char *msgid;
+    const char *msgid;
+    zpool_errata_t errata;
     
     if (zhp == NULL) {
         return 0;
@@ -68,7 +56,7 @@ static int zpool_list_callback(zpool_handle_t *zhp, void *data)
     }
     
     /* Get pool health status */
-    status = zpool_get_status(zhp, &msgid);
+    status = zpool_get_status(zhp, &msgid, &errata);
     switch (status) {
         case ZPOOL_STATUS_CORRUPT_CACHE:
             add_assoc_string(&pool_info, "health", "CORRUPT_CACHE");

@@ -56,8 +56,4 @@ int zpool_list_pools(libzfs_handle_t *g_zfs, zval *return_value);
 /* Error handling */
 void php_zfs_error(const char *fmt, ...);
 
-#ifdef ZTS
-#include "TSRM.h"
-#endif
-
 #endif /* PHP_ZFS_H */

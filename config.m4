@@ -24,12 +24,14 @@ if test "$PHP_ZFS" != "no"; then
   fi
 
   PHP_ADD_INCLUDE($ZFS_DIR/include)
-  
-  dnl Add FreeBSD-specific ZFS include paths
-  PHP_ADD_INCLUDE(/usr/src/cddl/compat/opensolaris/include)
-  PHP_ADD_INCLUDE(/usr/src/sys/contrib/openzfs/include)
-  PHP_ADD_INCLUDE(/usr/src/sys/contrib/openzfs/lib/libspl/include)
-  PHP_ADD_INCLUDE(/usr/src/sys/contrib/openzfs/lib/libspl/include/os/freebsd)
+
+  dnl Add bundled OpenZFS/SPL compat headers (from FreeBSD source tree)
+  dnl These replace the need for /usr/src to be installed
+  ZFS_EXT_SRCDIR=`cd $srcdir && pwd`
+  PHP_ADD_INCLUDE($ZFS_EXT_SRCDIR/compat/opensolaris)
+  PHP_ADD_INCLUDE($ZFS_EXT_SRCDIR/compat/openzfs)
+  PHP_ADD_INCLUDE($ZFS_EXT_SRCDIR/compat/spl)
+  PHP_ADD_INCLUDE($ZFS_EXT_SRCDIR/compat/spl-freebsd)
 
   PHP_CHECK_LIBRARY(zfs,libzfs_init,
   [
