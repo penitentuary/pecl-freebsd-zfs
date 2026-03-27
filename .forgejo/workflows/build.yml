@@ -11,7 +11,7 @@ jobs:
     runs-on: FreeBSD-15.0
     steps:
       - name: Install dependencies
-        run: sudo pkg install -y git php83 autoconf automake
+        run: doas pkg install -y git php83 autoconf automake
 
       - name: Checkout
         run: |
