@@ -1,0 +1,51 @@
+name: Build & Test
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  build:
+    name: FreeBSD 15 / PHP 8.3
+    runs-on: freebsd-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          pkg install -y php83 autoconf automake
+
+      - name: phpize
+        run: phpize
+
+      - name: Configure
+        run: ./configure --with-zfs=/usr
+
+      - name: Build
+        run: make -j$(sysctl -n hw.ncpu)
+
+      - name: Verify extension loads
+        run: |
+          php -d extension=modules/zfs.so -m | grep -q zfs
+          echo "Extension loaded successfully"
+
+      - name: Verify functions registered
+        run: |
+          php -d extension=modules/zfs.so -r '
+            $funcs = ["zpool_list", "zfs_list"];
+            foreach ($funcs as $f) {
+              if (!function_exists($f)) {
+                fprintf(STDERR, "FAIL: %s not registered\n", $f);
+                exit(1);
+              }
+              echo "OK: $f\n";
+            }
+          '
+
+      - name: Run PHPT tests
+        run: |
+          TEST_PHP_EXECUTABLE=$(which php) \
+          TEST_PHP_ARGS="-d extension=modules/zfs.so" \
+          NO_INTERACTION=1 \
+          php run-tests.php -d extension=modules/zfs.so tests/
